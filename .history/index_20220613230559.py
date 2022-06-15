@@ -10,20 +10,22 @@ population_sizeX = 20
 population_sizeY = 100
 population_set = []
 distances = []
-#city_list = []
-city_list = [[1,3],[2,7],[2,5],[4,8],[4,7],[4,4],[4,2],[5,3],[6,6],[6,1],[7,8],[8,7],[8,2],[9,3],[10,7],[11,6],[11,4],[11,1],[12,7],[13,5]]
+city_list = []
 cities_dict = {}
 
 
 def distance(a,b):
     return mt.sqrt((((b[0]-a[0])**2)+((b[1]-a[1])**2)))
 
-# for i in range(0,20):
-#     x = int(random.random() * 10)
-#     y = int(random.random() * 10)
-#     city_list.append([x,y])
-#     cities_dict[i]=[x,y]
-#     print('Ciudad ' + str(i),'X=' + str(x),'Y=' + str(y))
+def sum_distance():
+    return None
+
+for i in range(0,20):
+    x = int(random.random() * 10)
+    y = int(random.random() * 10)
+    city_list.append([x,y])
+    cities_dict[i]=[x,y]
+    print('Ciudad ' + str(i),'X=' + str(x),'Y=' + str(y))
 
 def fitness(route,city_list):
     #Calculate the fitness and return it.
@@ -134,8 +136,8 @@ def mating_pool(population, selection_results):
         matingpool.append(population[index])
     return matingpool
 
-def next_generation(current_gen, elite_size, mutationRate,city_list):
-    popRanked = sorted_routes(current_gen,city_list)
+def next_generation(current_gen, elite_size, mutationRate):
+    popRanked = sorted_routes(current_gen)
     selectionResults = selection(popRanked, elite_size)
     matingpool = mating_pool(current_gen, selectionResults)
     children = breed_population(matingpool, elite_size)
@@ -149,11 +151,10 @@ def genetic_algoritm(population,population_size,elite_size,mutation,generations)
     print("Distancia Inicial: " + str(progress[0]))
 
     import time
-    
     first_generation = True
     for i in range(1, generations+1):
-        pop = next_generation(population, elite_size, mutation,city_list)
-        progress.append(1 / sorted_routes(population,city_list)[0][1])
+        pop = next_generation(pop, elite_size, mutation)
+        progress.append(1 / sorted_routes(pop)[0][1])
         if i%1==0:
             print('Generation '+str(i),"Distance: ",progress[i])
             plt.figure(1)
@@ -166,59 +167,18 @@ def genetic_algoritm(population,population_size,elite_size,mutation,generations)
             plt.pause(0.1)
             plt.clf()
 
-            best_route_index = sorted_routes(population,city_list)[0][0]
+            best_route_index = sorted_routes(pop)[0][0]
             best_route = pop[best_route_index]
             x=[]
             y=[]
             print(best_route)
-            for i in best_route:
-                x.append(i[0])
-                y.append(i[1])
-                
-            x.append(best_route[0][0])
-            y.append(best_route[0][1])     
+            # for i in best_route:
+            #     x.append(i.x)
+            #     y.append(i.y)
             
-            plt.figure(2)
-            plt.plot(x, y, '--o')
-            plt.xlabel('X')
-            plt.ylabel('Y')
-            ax=plt.gca()
-            plt.title('Rutas Vs Ciudades')
-            bbox_props = dict(boxstyle="circle,pad=0.3", fc='C0', ec="black", lw=0.5)
-            for i in range(1,len(city_list)+1):
-                ax.text(city_list[i-1][0], city_list[i-1][1], str(i), ha="center", va="center",size=8,bbox=bbox_props)
-            plt.tight_layout()
-            plt.show(block=False)
-            plt.pause(0.1)
-            plt.clf()
-
-            if first_generation:
-                time.sleep(30)
-                first_generation = False
           
-    return best_route
+    return None
 
 best_route=genetic_algoritm(population=city_list, population_size=100, elite_size=20, mutation=0.01, generations=300)
 
-x=[]
-y=[]
-
-for i in best_route:
-    x.append(i[0])
-    y.append(i[1])
-
-x.append(best_route[0][0])
-y.append(best_route[0][1])
-plt.figure(3)
-plt.plot(x, y, '--o',color='green')
-plt.xlabel('X')
-plt.ylabel('Y')
-ax=plt.gca()
-plt.title('Ruta Final')
-bbox_props = dict(boxstyle="circle,pad=0.3", fc='green', ec="black", lw=0.5)
-
-for i in range(1,len(city_list)+1):
-    ax.text(city_list[i-1][0], cityList[i-1][1], str(i), ha="center", va="center", size=8, bbox=bbox_props)
-plt.tight_layout()
-plt.show()
 print(best_route)
